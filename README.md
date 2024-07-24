@@ -104,6 +104,7 @@ smbclient \\\\<ip address>\\<Shared Folder>
 |-|-|
 |21|FTP|
 |23|telnet|
+|445|SMB|
 
 ## それ以外
 
