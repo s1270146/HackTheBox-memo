@@ -11,6 +11,7 @@
   - [telnet](#telnet)
   - [ftp](#ftp)
   - [redis](#redis)
+  - [smb](#smb)
 - [ポート番号](#ポート番号)
   - [ウェルノウン](#ウェルノウン)
   - [それ以外](#それ以外)
@@ -79,6 +80,21 @@ keys *
 # 指定したキーの値を取得
 get <key>
 ```
+
+## smb
+
+- Windows標準の通信規約 ファイル共有やプリンタ共有
+- ポート番号: 445
+
+テンプレート
+
+```bash
+smbclient -L <ip address>
+
+smbclient \\\\<ip address>\\<Shared Folder>
+```
+
+[日本語doc(非公式？)](https://www.samba.gr.jp/project/translation/3.6/htmldocs/manpages-3/smbclient.1.html)
 
 # ポート番号
 
