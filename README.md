@@ -79,6 +79,7 @@ nmap -p- --min-rate 10000 <IP address>
 
 # -sV: Probe open ports to determine service/version info
 # -p <小さい方の数字>-<大きい方の数字> ←で範囲指定
+# -sC: 説明表示
 ```
 
 ## telnet
@@ -133,6 +134,13 @@ smbclient \\\\<ip address>\\<Shared Folder>
 
 ```bash
 gobuster dir -w <passwordlist path> -u <url>
+```
+
+ログインページさがし
+```bash
+gobuster dir -w /usr/share/seclists/Discovery/Web-Content/Logins.fuzz.txt -u <hostname> -x php
+
+# -xは拡張子指定
 ```
 
 ### SecList
