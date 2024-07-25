@@ -20,7 +20,7 @@
     - [SecList](#seclist)
 - [テンプレート](#テンプレート)
   - [SQL Injection](#sql-injection)
-    - [MySQL](#mysql)
+  - [MySQL](#mysql)
 - [ポート番号](#ポート番号)
   - [ウェルノウン](#ウェルノウン)
   - [それ以外](#それ以外)
@@ -151,9 +151,34 @@ sudo apt install seclists
 
 ## SQL Injection
 
-### MySQL
+- MySQL
+  - \#を使ってコメントアウトする
 
-- \#を使ってコメントアウトする
+## MySQL
+
+- ポート 3306
+- コマンド
+
+```bash
+mysql -h <hostname> -u root
+```
+
+```sql
+show databases;
+
+use htb;
+
+show tables;
+
+select * from config;
+```
+
+- mysql内でバージョンを確認
+
+```sql
+select version();
+```
+
 
 # ポート番号
 
@@ -171,4 +196,5 @@ sudo apt install seclists
 
 |番号|プロトコル|
 |-|-|
+|3306|MySQL|
 |6379|Redis|
