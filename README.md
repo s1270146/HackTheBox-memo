@@ -4,27 +4,73 @@
 
 - [Hack The Box メモ](#hack-the-box-メモ)
 - [目次](#目次)
-- [手順](#手順)
-  - [nmapでポートスキャン](#nmapでポートスキャン)
-- [テンプレート](#テンプレート)
+- [ジャンル](#ジャンル)
+  - [スキャン](#スキャン)
+  - [リモートログイン](#リモートログイン)
+  - [ファイル共有](#ファイル共有)
+  - [Web Directory Fuzzing](#web-directory-fuzzing)
+  - [Database](#database)
+- [ツール](#ツール)
   - [nmap](#nmap)
   - [telnet](#telnet)
   - [ftp](#ftp)
-  - [redis](#redis)
-  - [smb](#smb)
+  - [redis-cli](#redis-cli)
+  - [smbclient](#smbclient)
+  - [gobuster](#gobuster)
+    - [SecList](#seclist)
+- [テンプレート](#テンプレート)
+  - [SQL Injection](#sql-injection)
+    - [MySQL](#mysql)
 - [ポート番号](#ポート番号)
   - [ウェルノウン](#ウェルノウン)
   - [それ以外](#それ以外)
 
-# 手順
+# ジャンル
 
-## nmapでポートスキャン
+## スキャン
 
-空いているポートを確認する
+- ポートスキャン
+  - 空いているポートを確認する
+  - [nmap](#nmap)
 
-テンプレート: [nmapでポートスキャン](#nmapでポートスキャン)
+## リモートログイン
 
-# テンプレート
+- telnet
+  - ポート番号 23
+  - 以下のような重要なアカウントで空白がパスワードになっていることがある
+      - root
+      - admin
+      - administrator
+  - [telnet](#telnet)
+
+## ファイル共有
+
+- ftp
+  - ポート番号 21
+  - 匿名(anonymous)でログインできることがある
+  - ログイン成功するとステータスコード230が返ってくる
+  - [ftp](#ftp)
+- smb
+  - Windows標準の通信規約 ファイル共有やプリンタ共有
+  - ポート番号: 445
+  - [smbclient](#smbclient)
+
+## Web Directory Fuzzing
+
+- gobuster
+  - ウェブのディレクトリやファイルを見つけるためにブルートフォースアタック
+  - [gobuster](#gobuster)
+
+## Database
+
+- SQL Injection
+  - [SQL Injection テンプレート](#sql-injection)
+- redis
+  - データベース
+  - ポート番号 6379
+  - [redis-cli](#redis-cli)
+
+# ツール
 
 ## nmap
 
@@ -37,25 +83,17 @@ nmap -p- --min-rate 10000 <IP address>
 
 ## telnet
 
-ポート番号 23
-
-以下のような重要なアカウントで空白がパスワードになっていることがある
-- root
-- admin
-- administrator
+```bash
+telnet <hostname>
+```
 
 ## ftp
 
-- ポート番号 21
-- 匿名(anonymous)でログインできることがある
-- ログイン成功するとステータスコード230が返ってくる
+```bash
+ftp <ip adress>
+```
 
-## redis
-
-- データベース
-- ポート番号 6379
-
-テンプレート
+## redis-cli
 
 ```bash
 
@@ -81,12 +119,7 @@ keys *
 get <key>
 ```
 
-## smb
-
-- Windows標準の通信規約 ファイル共有やプリンタ共有
-- ポート番号: 445
-
-テンプレート
+## smbclient
 
 ```bash
 smbclient -L <ip address>
@@ -96,6 +129,32 @@ smbclient \\\\<ip address>\\<Shared Folder>
 
 [日本語doc(非公式？)](https://www.samba.gr.jp/project/translation/3.6/htmldocs/manpages-3/smbclient.1.html)
 
+## gobuster
+
+```bash
+gobuster dir -w <passwordlist path> -u <url>
+```
+
+### SecList
+
+パスワードリスト
+
+[SecLists Github](https://github.com/danielmiessler/SecLists)
+
+```bash
+sudo apt install seclists
+```
+
+インストール後``/usr/share/seclists``ディレクトリにパスワードのリストが保管される
+
+# テンプレート
+
+## SQL Injection
+
+### MySQL
+
+- \#を使ってコメントアウトする
+
 # ポート番号
 
 ## ウェルノウン
@@ -104,6 +163,8 @@ smbclient \\\\<ip address>\\<Shared Folder>
 |-|-|
 |21|FTP|
 |23|telnet|
+|80|HTTP|
+|443|HTTPS|
 |445|SMB|
 
 ## それ以外
