@@ -17,3 +17,5 @@
   - ``mssqlclient.py``
 - Windows local privilege escalation
   - ``WinPEAS``
+- impacket
+  - ``python mssqlclient.py ARCHETYPE/sql_svc@10.129.95.187 -windows-auth``
