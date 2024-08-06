@@ -16,6 +16,7 @@
   - [ftp](#ftp)
   - [redis-cli](#redis-cli)
   - [smbclient](#smbclient)
+    - [オプション](#オプション)
   - [gobuster](#gobuster)
     - [SecList](#seclist)
   - [Evil-WinRM](#evil-winrm)
@@ -149,6 +150,11 @@ smbclient -L <ip address>
 
 smbclient \\\\<ip address>\\<Shared Folder>
 ```
+
+### オプション
+
+- ``-N``: No password
+- ``-L``: to allows you to look at what services are available on a server.
 
 [日本語doc(非公式？)](https://www.samba.gr.jp/project/translation/3.6/htmldocs/manpages-3/smbclient.1.html)
 
